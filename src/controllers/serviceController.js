@@ -1,4 +1,4 @@
-const Service = require("../models/serviceModel.js");
+const Service = require("../db/models/serviceModel.js");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 

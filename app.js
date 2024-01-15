@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const swaggerUi = require("swagger-ui-express");
+const serviceRoute = require("./src/routes/serviceRoute.js");
 
 const port = 3000;
 const app = express();
@@ -12,5 +13,7 @@ mongoose.connect("mongodb://0.0.0.0:27017/fiverr");
 
 app.use(express.urlencoded());
 app.use(express.json());
+
+app.use("/service" , serviceRoute);
 
 app.listen(port, () => console.log(`Listening on : ${port}`));

@@ -5,11 +5,11 @@ const jwt = require("../middlewares/jwt.js");
 // const auth = require("../controllers/auth.js");
 
 const serviceController = require("../controllers/serviceController.js");
-router.route("/").get(serviceController.getAllServices);
+router.route("/").get(serviceController.getAllServices).post(serviceController.createService)
 
 router
   .route("/:id_service")
-  .post(serviceController.createService)
+
   .get(serviceController.getServiceById)
   .put(serviceController.updateService)
   .delete(serviceController.deleteService);
