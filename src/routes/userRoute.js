@@ -4,11 +4,23 @@ const jwt = require("../middlewares/jwt.js");
 
 const auth = require("../controllers/auth.js");
 
-router.route("/register").post(auth.register);
-router.route("/login").post(auth.login);
+
 
 const userController = require("../controllers/userController.js");
-router.route("/").get(userController.getAllUsers);
+
+
+router.route("/")
+  .get(userController.getAllUsers);
+
+router
+  .route('/register')
+  .post(userController.register)
+
+
+router
+  .route('/login')
+  .post(userController.login)
+
 
 router
   .route("/:id_user")

@@ -1,6 +1,7 @@
-const User = require("../models/userModel.js");
+const User = require("../db/models/userModel.js");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const bcrypt = require('bcrypt');
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -8,6 +9,55 @@ exports.getAllUsers = async (req, res) => {
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+exports.register = async (req, res) => {
+  try {
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+    // Check if any user already exists
+    const existingUser = await User.findOne();
+    const role = existingUser ? 'user' : 'admin';
+
+    // Create a new user with the hashed password and role
+    const newUser = new User({
+      ...req.body,
+      password: hashedPassword,
+      role
+    });
+
+    const user = await newUser.save();
+
+    res.status(201).json({ message: `Utilisateur crée: ${user.email}`, role: user.role });
+  } catch (error) {
+    res.status(400).json({ message: "invalid request", error });
+  }
+}
+
+exports.login = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(404).json({ message: "user not found" });
+    }
+
+    // Compare the hashed password with the password from the request body
+    const match = await bcrypt.compare(req.body.password, user.password);
+    if (!match) {
+      return res.status(401).json({ message: "password incorrect" });
+    }
+
+    const userData = {
+      id: user._id,
+      email: user.email,
+      password: user.password,
+      firstName: user.firstName,
+    };
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "an error occured" });
   }
 };
 
