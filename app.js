@@ -8,10 +8,7 @@ const app = express();
 const swaggerSpec = require("./src/docs/swagger-config.js");
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-const swaggerSpec = require("./src/docs/swagger-config.js");
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-mongoose.connect("mongodb://0.0.0.0:27017/chat");
+mongoose.connect("mongodb://0.0.0.0:27017/fiverr");
 
 app.use(express.urlencoded());
 app.use(express.json());
