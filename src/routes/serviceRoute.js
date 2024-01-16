@@ -5,7 +5,7 @@ const jwt = require("../middlewares/jwt.js");
 // const auth = require("../controllers/auth.js");
 
 const serviceController = require("../controllers/serviceController.js");
-router.route("/").get(serviceController.getAllServices).post(serviceController.createService)
+router.route("/").get(serviceController.getAllServices).post(jwt.verifyWorkerToken, serviceController.createService)
 
 router
   .route("/:id_service")

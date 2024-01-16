@@ -1,6 +1,7 @@
 const Service = require("../db/models/serviceModel.js");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const { verifyToken } = require("../middlewares/jwt.js"); 
 
 exports.getAllServices = async (req, res) => {
   try {
@@ -13,13 +14,16 @@ exports.getAllServices = async (req, res) => {
 
 exports.createService = async (req, res) => {
   try {
-    let newService = new Service(req.body);
-    let service = await newService.save();
-    res.status(201).json(service);
-  } catch (error) {
+ // Utiliser les données du token décrypté
+ const payload = req.user;
+ let newService = new Service({ worker: payload.id, ...req.body });
+ let service = await newService.save();
+
+ res.status(201).json(service);
+  } catch (error) { 
     console.error(error);
     res.status(401).json({ message: "Request invalided" });
-  }
+  } 
 };
 
 exports.getServiceById = async (req, res) => {

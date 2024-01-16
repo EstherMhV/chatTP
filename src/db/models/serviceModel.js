@@ -14,21 +14,18 @@ const serviceSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  // employer: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: "User",
-  //   required: true,
-  // },
-  // worker: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: "User",
-  // },
-  order: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Order",
-    },
-  ],
+  worker: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+
+  // order: [
+  //   {
+  //     type: mongoose.Schema.Types.ObjectId,
+  //     ref: "Order",
+  //   },
+  // ],
 });
 
 module.exports = mongoose.model("Service", serviceSchema);
