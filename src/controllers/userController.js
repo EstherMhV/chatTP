@@ -2,6 +2,8 @@ const User = require("../db/models/userModel.js");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const bcrypt = require('bcrypt');
+const { AdminUserCreator, EmployeeCreator, EmployerCreator, RegularUserCreator } = require('./FactoryUserPattern.js');
+
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -12,21 +14,30 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
+
+
 exports.register = async (req, res) => {
   try {
     // Hash the password
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-    // Check if any user already exists
-    const existingUser = await User.findOne();
-    const role = existingUser ? 'user' : 'admin';
+    let creator;
+    switch (req.body.role) {
+      case 'admin':
+        creator = new AdminUserCreator();
+        break;
+      case 'employee':
+        creator = new EmployeeCreator();
+        break;
+      case 'employer':
+        creator = new EmployerCreator();
+        break;
+      default:
+        creator = new RegularUserCreator();
+    }
 
     // Create a new user with the hashed password and role
-    const newUser = new User({
-      ...req.body,
-      password: hashedPassword,
-      role
-    });
+    const newUser = creator.createUser(req.body.name, req.body.email, hashedPassword);
 
     const user = await newUser.save();
 
@@ -35,6 +46,7 @@ exports.register = async (req, res) => {
     res.status(400).json({ message: "invalid request", error });
   }
 }
+
 
 exports.login = async (req, res) => {
   try {
@@ -52,9 +64,13 @@ exports.login = async (req, res) => {
     const userData = {
       id: user._id,
       email: user.email,
-      password: user.password,
       firstName: user.firstName,
+      role: user.role
     };
+
+    // Send the user data to the client
+    res.status(200).json(userData);
+
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "an error occured" });

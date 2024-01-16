@@ -17,10 +17,10 @@ let userSchema = new Schema({
     required: true,
   },
   role: {
-      type: String,
-      required: true,
-      enum: ['admin', 'user'],
-      default: 'user'
+    type: String,
+    required: true,
+    enum: ['admin', 'employee', 'employer', 'user'],
+    default: 'user'
   },
 });
 
