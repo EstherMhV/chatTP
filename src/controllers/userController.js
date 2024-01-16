@@ -26,7 +26,7 @@ exports.register = async (req, res) => {
       case 'admin':
         creator = new AdminUserCreator();
         break;
-      case 'employee':
+      case 'worker':
         creator = new WorkerCreator();
         break;
       case 'employer':
