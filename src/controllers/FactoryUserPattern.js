@@ -12,9 +12,9 @@ class AdminUserCreator extends UserCreator {
     }
 }
 
-class EmployeeCreator extends UserCreator {
+class WorkerCreator extends UserCreator {
     createUser(name, email, password) {
-        return new User({ name, email, password, role: 'employee' });
+        return new User({ name, email, password, role: 'worker' });
     }
 }
 
@@ -30,4 +30,4 @@ class RegularUserCreator extends UserCreator {
     }
 }
 
-module.exports = { AdminUserCreator, EmployeeCreator, EmployerCreator, RegularUserCreator };
+module.exports = { AdminUserCreator, WorkerCreator, EmployerCreator, RegularUserCreator };

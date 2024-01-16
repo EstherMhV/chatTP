@@ -19,7 +19,7 @@ let userSchema = new Schema({
   role: {
     type: String,
     required: true,
-    enum: ['admin', 'employee', 'employer', 'user'],
+    enum: ['admin', 'worker', 'employer', 'user'],
     default: 'user'
   },
 });

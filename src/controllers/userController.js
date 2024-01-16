@@ -2,7 +2,7 @@ const User = require("../db/models/userModel.js");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const bcrypt = require('bcrypt');
-const { AdminUserCreator, EmployeeCreator, EmployerCreator, RegularUserCreator } = require('./FactoryUserPattern.js');
+const { AdminUserCreator, WorkerCreator, EmployerCreator, RegularUserCreator } = require('./FactoryUserPattern.js');
 
 
 exports.getAllUsers = async (req, res) => {
@@ -27,7 +27,7 @@ exports.register = async (req, res) => {
         creator = new AdminUserCreator();
         break;
       case 'employee':
-        creator = new EmployeeCreator();
+        creator = new WorkerCreator();
         break;
       case 'employer':
         creator = new EmployerCreator();
