@@ -19,7 +19,7 @@ const serviceSchema = new mongoose.Schema({
   //   ref: "User",
   //   required: true,
   // },
-  // employee: {
+  // worker: {
   //   type: mongoose.Schema.Types.ObjectId,
   //   ref: "User",
   // },
