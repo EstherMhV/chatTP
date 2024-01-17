@@ -52,6 +52,10 @@ exports.createService = async (req, res) => {
     let newService = new Service({ worker: payload.id, ...requestData });
     let service = await newService.save();
 
+    // notificationManager.notify("serviceCreated", {
+    //   serviceId: service._id,
+    // });
+    
     res.status(201).json(service);
   } catch (error) {
     console.error(error);
@@ -66,17 +70,6 @@ exports.getAllServices = async (req, res) => {
     res.status(200).json(services);
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
-    const payload = req.user;
-    let newService = new Service({ worker: payload.id, ...req.body });
-    let service = await newService.save();
-    notificationManager.notify("serviceCreated", {
-      serviceId: service._id,
-    });
-
-    res.status(201).json({ message: "Service created successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(401).json({ message: "Request invalided" });
   }
 };
 
