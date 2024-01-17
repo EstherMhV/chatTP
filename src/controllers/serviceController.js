@@ -1,7 +1,6 @@
 const Service = require("../db/models/serviceModel.js");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const { verifyToken } = require("../middlewares/jwt.js"); 
 
 const xml2js = require('xml2js');
 const parser = new xml2js.Parser({ explicitRoot: false, explicitArray: false, mergeAttrs: true });
