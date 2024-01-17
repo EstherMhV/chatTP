@@ -22,6 +22,24 @@ let userSchema = new Schema({
     enum: ['admin', 'worker', 'employer', 'user'],
     default: 'user'
   },
+  typeOfService: {
+    type: String,
+    required: false,
+    enum: ['Traduction', 'Developpement', 'Design', 'Marketing', 'Video', 'Musique', 'Redaction', 'Other'],
+    default: 'Other'
+  },
+  country: {
+    type: String,
+    required: false,
+    enum: ['United-State', 'France', 'Canada', 'United-Kingdom', 'Germany', 'Spain', 'Italy', 'Other'],
+    default: 'Other'
+  },
+  budget: {
+    type: String,
+    required: false,
+    enum: ['100$', '500$', '1000$', '5000$', '10000$', '50000$', '100000$', 'undefined'],
+    default: 'undefined'
+  },
 });
 
 module.exports = mongoose.model("User", userSchema);
