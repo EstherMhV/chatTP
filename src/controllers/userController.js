@@ -1,9 +1,16 @@
 const User = require("../db/models/userModel.js");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const bcrypt = require('bcrypt');
-const { AdminUserCreator, WorkerCreator, EmployerCreator, RegularUserCreator } = require('./FactoryUserPattern.js');
-
+const bcrypt = require("bcrypt");
+const {
+  AdminUserCreator,
+  WorkerCreator,
+  EmployerCreator,
+  RegularUserCreator,
+} = require("./FactoryUserPattern.js");
+const notificationManager = require("../notification/notificationManager.js");
+const userObserver = require("../notification/observer/userObserver.js");
+notificationManager.subscribe(userObserver);
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -14,8 +21,6 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-
-
 exports.register = async (req, res) => {
   try {
     // Hash the password
@@ -23,13 +28,13 @@ exports.register = async (req, res) => {
 
     let creator;
     switch (req.body.role) {
-      case 'admin':
+      case "admin":
         creator = new AdminUserCreator();
         break;
-      case 'worker':
+      case "worker":
         creator = new WorkerCreator();
         break;
-      case 'employer':
+      case "employer":
         creator = new EmployerCreator();
         break;
       default:
@@ -37,16 +42,24 @@ exports.register = async (req, res) => {
     }
 
     // Create a new user with the hashed password and role
-    const newUser = creator.createUser(req.body.name, req.body.email, hashedPassword);
+    const newUser = creator.createUser(
+      req.body.name,
+      req.body.email,
+      hashedPassword
+    );
 
     const user = await newUser.save();
 
-    res.status(201).json({ message: `Utilisateur crée: ${user.email}`, role: user.role });
+    notificationManager.notify("userCreated", {
+      userId: user._id,
+    });
+    res
+      .status(201)
+      .json({ message: `Utilisateur crée: ${user.email}`, role: user.role });
   } catch (error) {
     res.status(400).json({ message: "invalid request", error });
   }
-}
-
+};
 
 exports.login = async (req, res) => {
   try {
@@ -65,7 +78,7 @@ exports.login = async (req, res) => {
       id: user._id,
       email: user.email,
       firstName: user.firstName,
-      role: user.role
+      role: user.role,
     };
 
 
@@ -97,8 +110,6 @@ exports.updateUser = async (req, res) => {
   try {
     const userId = req.params.id_user;
     const updates = req.body;
-
-    await updateUserSchema.validate(updates);
 
     const updatedUser = await User.findByIdAndUpdate(userId, updates, {
       new: true,
