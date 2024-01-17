@@ -4,6 +4,8 @@ const swaggerUi = require("swagger-ui-express");
 const serviceRoute = require("./src/routes/serviceRoute.js");
 const userRoute = require('./src/routes/userRoute.js');
 const orderRoute = require('./src/routes/orderRoute.js');
+const bodyParser = require('body-parser');
+require('body-parser-xml')(bodyParser);
 
 const port = 3000;
 const app = express();
@@ -21,6 +23,7 @@ mongoose.connect("mongodb://0.0.0.0:27017/fiverr");
 
 app.use(express.urlencoded());
 app.use(express.json());
+app.use(bodyParser.xml());
 
 app.use("/service", serviceRoute);
 app.use("/users", userRoute);

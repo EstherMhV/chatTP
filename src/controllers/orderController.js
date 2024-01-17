@@ -1,7 +1,6 @@
 const Order = require("../db/models/orderModel.js");
 const Service = require("../db/models/serviceModel.js");
 const jwt = require("jsonwebtoken");
-const { verifyToken } = require("../middlewares/jwt.js"); 
 
 
   
