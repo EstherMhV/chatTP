@@ -1,6 +1,9 @@
 const Service = require("../db/models/serviceModel.js");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const notificationManager = require("../notification/notificationManager.js");
+const ServiceObserver = require("../notification/observer/serviceObserver.js");
+const serviceObserver = new ServiceObserver();
 
 exports.getAllServices = async (req, res) => {
   try {
@@ -15,10 +18,14 @@ exports.createService = async (req, res) => {
   try {
     let newService = new Service(req.body);
     let service = await newService.save();
-    res.status(201).json(service);
+    notificationManager.notify("serviceCreated", {
+      serviceId: service._id,
+    });
+
+    res.status(201).json({ message: "Service created successfully" });
   } catch (error) {
     console.error(error);
-    res.status(401).json({ message: "Request invalided" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -39,8 +46,6 @@ exports.updateService = async (req, res) => {
   try {
     const serviceId = req.params.id_user;
     const updates = req.body;
-
-    await updateUserSchema.validate(updates);
 
     const updatedService = await Service.findByIdAndUpdate(serviceId, updates, {
       new: true,
