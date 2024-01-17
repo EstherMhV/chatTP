@@ -81,8 +81,12 @@ exports.login = async (req, res) => {
       role: user.role,
     };
 
+
+      // Generate a JWT token with user data
+      const token = await jwt.sign(userData, process.env.JWT_KEY, { expiresIn: "10h" });
     // Send the user data to the client
-    res.status(200).json(userData);
+    res.status(200).json({ userData: userData, token: token });
+
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "an error occured" });

@@ -4,6 +4,7 @@ require("dotenv").config();
 const notificationManager = require("../notification/notificationManager.js");
 const ServiceObserver = require("../notification/observer/serviceObserver.js");
 const serviceObserver = new ServiceObserver();
+const { verifyToken } = require("../middlewares/jwt.js"); 
 
 exports.getAllServices = async (req, res) => {
   try {
@@ -18,14 +19,10 @@ exports.createService = async (req, res) => {
   try {
     let newService = new Service(req.body);
     let service = await newService.save();
-    notificationManager.notify("serviceCreated", {
-      serviceId: service._id,
-    });
-
-    res.status(201).json({ message: "Service created successfully" });
+    res.status(201).json(service);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(401).json({ message: "Request invalided" });
   }
 };
 

@@ -2,7 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const swaggerUi = require("swagger-ui-express");
 const serviceRoute = require("./src/routes/serviceRoute.js");
-const userRoute = require("./src/routes/userRoute.js");
+const userRoute = require('./src/routes/userRoute.js');
+const orderRoute = require('./src/routes/orderRoute.js');
 
 const port = 3000;
 const app = express();
@@ -23,5 +24,8 @@ app.use(express.json());
 
 app.use("/service", serviceRoute);
 app.use("/users", userRoute);
+
+
+app.use('/order', orderRoute);
 
 app.listen(port, () => console.log(`Listening on : ${port}`));
