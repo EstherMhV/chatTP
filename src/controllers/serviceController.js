@@ -1,6 +1,3 @@
-const Service = require("../db/models/serviceModel.js");
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
 const notificationManager = require("../notification/notificationManager.js");
 const ServiceObserver = require("../notification/observer/serviceObserver.js");
 const serviceObserver = new ServiceObserver();
@@ -17,9 +14,14 @@ exports.getAllServices = async (req, res) => {
 
 exports.createService = async (req, res) => {
   try {
-    let newService = new Service(req.body);
+    const payload = req.user;
+    let newService = new Service({ worker: payload.id, ...req.body });
     let service = await newService.save();
-    res.status(201).json(service);
+    notificationManager.notify("serviceCreated", {
+      serviceId: service._id,
+    });
+
+    res.status(201).json({ message: "Service created successfully" });
   } catch (error) {
     console.error(error);
     res.status(401).json({ message: "Request invalided" });
@@ -29,7 +31,7 @@ exports.createService = async (req, res) => {
 exports.getServiceById = async (req, res) => {
   try {
     const serviceId = req.params.id;
-    const service = await Service.findById(serviceId);
+    const service = await service.findById(serviceId);
     if (!service) {
       return res.status(404).json({ message: "Service not found" });
     }
@@ -44,7 +46,7 @@ exports.updateService = async (req, res) => {
     const serviceId = req.params.id_user;
     const updates = req.body;
 
-    const updatedService = await Service.findByIdAndUpdate(serviceId, updates, {
+    const updatedService = await service.findByIdAndUpdate(serviceId, updates, {
       new: true,
     });
 
@@ -64,7 +66,7 @@ exports.updateService = async (req, res) => {
 exports.deleteService = async (req, res) => {
   try {
     const serviceId = req.params.id_service;
-    const deletedService = await Service.findByIdAndDelete(serviceId);
+    const deletedService = await service.findByIdAndDelete(serviceId);
 
     if (!deletedService) {
       return res.status(404).json({ error: "Service not found" });
